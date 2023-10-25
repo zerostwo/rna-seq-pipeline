@@ -1,0 +1,5 @@
+﻿sample,group,library_layout,input_r1,input_r2
+WT1,WT,paired,test_data/WT1.input.R1.fastq.gz,test_data/WT1.input.R2.fastq.gz
+WT2,WT,paired,test_data/WT2.input.R1.fastq.gz,test_data/WT2.input.R2.fastq.gz
+KO1,KO,paired,test_data/KO1.input.R1.fastq.gz,test_data/KO1.input.R2.fastq.gz
+KO2,KO,paired,test_data/KO2.input.R1.fastq.gz,test_data/KO2.input.R2.fastq.gz

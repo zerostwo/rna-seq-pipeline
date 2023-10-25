@@ -1,0 +1,61 @@
+from snakemake.utils import min_version
+import os
+
+# Set minimum snakemake version
+min_version("7.32.4")
+
+import pandas as pd
+
+# Load metadata
+metadata = pd.read_csv(config["metadata_file"])
+
+configfile: "config/config.yaml"
+
+include: "rules/quality_control.smk"
+include: "rules/alignment.smk"
+include: "rules/quantification.smk"
+
+def get_final_output():
+    final_output = []
+
+    # Add quality control outputs
+    final_output.extend(
+        expand(
+            "{outdir}/01_clean_data/{sample}_val_1.fq.gz",
+            sample=metadata['sample'],
+            outdir=config["outdir"]
+        )
+    )
+    final_output.extend(
+        expand(
+            "{outdir}/01_clean_data/{sample}_val_2.fq.gz",
+            sample=metadata['sample'],
+            outdir=config["outdir"]
+        )
+    )
+    
+    # Add STAR alignment outputs
+    final_output.extend(
+        expand(
+            "{outdir}/02_aligned_data/{sample}.Aligned.sortedByCoord.out.bam",
+            sample=metadata['sample'],
+            outdir=config["outdir"]
+        )
+    )
+
+    # Add featureCounts outputs
+    final_output.extend(
+        expand(
+            "{outdir}/03_quantification/{sample}.counts.txt",
+            sample=metadata['sample'],
+            outdir=config["outdir"]
+        )
+    )
+    # Add featureCounts merged matrix
+    final_output.append("{outdir}/03_quantification/merged_expression_matrix.txt".format(outdir=config["outdir"]))
+
+    return final_output
+
+rule all:
+    input:
+       get_final_output(),
